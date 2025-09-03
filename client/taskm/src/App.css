@@ -1,0 +1,115 @@
+.app-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+}
+
+.task-item {
+  cursor: pointer;
+}
+
+.task-done {
+  text-decoration: line-through;
+}
+/* Container */
+.task-container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Heading */
+.task-container h2 {
+  margin-bottom: 10px;
+}
+
+/* Inputs & Select */
+.task-input,
+.task-date,
+.task-priority {
+  margin-right: 8px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.task-button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.task-button:hover {
+  background-color: #45a049;
+}
+
+/* Filter bar */
+.filter-bar {
+  margin: 12px 0;
+}
+
+.filter-bar button {
+  margin-right: 6px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.filter-bar button:hover {
+  background-color: #d5d5d5;
+}
+
+/* Task list */
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Buttons inside tasks */
+.task-list button {
+  margin-left: 6px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-list .edit-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.task-list .edit-btn:hover {
+  background-color: #0b7dda;
+}
+
+.task-list .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.task-list .delete-btn:hover {
+  background-color: #da190b;
+}
+/* App.css */
+.app.light { background: #fff; color: #000; }
+.app.dark { background: #121212; color: #fff; }
+.app.colored { background: linear-gradient(to right, #ff7e5f, #feb47b); color: #fff; }
+
+form { display: flex; flex-direction: column; width: 250px; margin: auto; padding: 20px; border-radius: 8px; }
+input, button { margin: 5px 0; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+button { cursor: pointer; }

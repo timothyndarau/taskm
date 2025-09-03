@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, Task
+from models import db, Task, User
 from datetime import datetime
 
 app = Flask(__name__)
@@ -17,6 +17,28 @@ migrate = Migrate(app, db)
 
 with app.app_context():
     db.create_all()  # Creates tables
+
+
+
+@app.route("/signup", methods=["POST"])
+def signup():
+    data = request.json
+    if User.query.filter_by(email=data["email"]).first():
+        return jsonify({"message": "Email exists"}), 400
+    new_user = User(username=data["username"], email=data["email"])
+    new_user.set_password(data["password"])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User created successfully"}), 201
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    user = User.query.filter_by(email=data["email"]).first()
+    if user and user.check_password(data["password"]):
+        return jsonify({"message": "Login successful"}), 200
+    return jsonify({"message": "Invalid credentials"}), 401
+
 
 # Routes
 @app.route("/tasks", methods=["GET"])
