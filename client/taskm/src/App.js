@@ -1,29 +1,31 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import SignUp from "./SignUp";
-import Login from "./Login";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./components/Login";
+import Signup from "./components/SignUp";
+import TaskApp from "./components/TaskApp";
 
-function App() {
-  const [theme, setTheme] = useState("light"); // light, dark, colored
-
-  const toggleTheme = (mode) => setTheme(mode);
-
-  return (
-    <div className={`app ${theme}`}>
-      <Router>
-        <nav>
-          <Link to="/signup">Sign Up</Link> | <Link to="/login">Login</Link>
-          <button onClick={() => toggleTheme("light")}>Light</button>
-          <button onClick={() => toggleTheme("dark")}>Dark</button>
-          <button onClick={() => toggleTheme("colored")}>Color</button>
-        </nav>
-        <Routes>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Router>
-    </div>
-  );
+// Simple private route
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem("access_token"); // check if user is logged in
+  return token ? children : <Navigate to="/login" />;
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/tasks"
+          element={
+            <PrivateRoute>
+              <TaskApp />
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  );
+}
