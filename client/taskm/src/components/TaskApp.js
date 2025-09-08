@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchWithAuth } from "../fetchWithAuth";
 
 export default function TaskApp() {
@@ -15,6 +16,15 @@ export default function TaskApp() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("access_token")
   );
+  const navigate = useNavigate();
+
+  // 🔹 Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setIsLoggedIn(false); // optional: update state
+    navigate("/login");
+  };
 
   useEffect(() => {
     if (isLoggedIn) loadTasks();
@@ -62,20 +72,24 @@ export default function TaskApp() {
     } else alert("Login failed. Check credentials.");
   };
 
-  const addTask = async () => {
-    if (!newTask) return;
-    const res = await fetchWithAuth("http://127.0.0.1:5000/tasks", {
-      method: "POST",
-      body: JSON.stringify({ title: newTask, due_date: dueDate, priority }),
-    });
-    if (res.ok) {
-      const task = await res.json();
-      setTasks([...tasks, task]);
-      setNewTask("");
-      setDueDate("");
-      setPriority("Medium");
-    }
-  };
+const addTask = async () => {
+  if (!newTask) return;
+  const res = await fetchWithAuth("http://127.0.0.1:5000/tasks", {
+    method: "POST",
+    body: JSON.stringify({
+      title: newTask,
+      due_date: dueDate || null,
+      priority, completed: false
+    }),
+  });
+  if (res.ok) {
+    const task = await res.json();
+    setTasks([...tasks, task]);
+    setNewTask("");
+    setDueDate("");
+    setPriority("Medium");
+  }
+};
 
   const toggleTask = async (id, completed) => {
     const res = await fetchWithAuth(`http://127.0.0.1:5000/tasks/${id}`, {
@@ -143,6 +157,10 @@ export default function TaskApp() {
   return (
     <div className="task-container">
       <h2>Task Manager</h2>
+      {/* 🔹 Logout button */}
+      <button onClick={handleLogout} style={{ marginBottom: "20px" }}>
+        Logout
+      </button>
 
       <input
         className="task-input"
