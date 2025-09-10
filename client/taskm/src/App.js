@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./components/Login";
 import Signup from "./components/SignUp";
 import TaskApp from "./components/TaskApp";
+import Navbar from "./components/Navbar"; // ✅ import Navbar
 
 // Simple private route
 function PrivateRoute({ children }) {
@@ -13,19 +14,22 @@ function PrivateRoute({ children }) {
 export default function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/tasks"
-          element={
-            <PrivateRoute>
-              <TaskApp />
-            </PrivateRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
+      <div>
+        <Navbar /> {/* ✅ Navbar is always visible */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/tasks"
+            element={
+              <PrivateRoute>
+                <TaskApp />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

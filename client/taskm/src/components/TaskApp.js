@@ -32,7 +32,7 @@ export default function TaskApp() {
 
   const loadTasks = async () => {
     try {
-      const res = await fetchWithAuth("http://127.0.0.1:5000/tasks");
+      const res = await fetchWithAuth("/tasks");
       if (res.ok) {
         const data = await res.json();
         setTasks(data);
@@ -49,7 +49,7 @@ export default function TaskApp() {
   };
 
   const signup = async () => {
-    const res = await fetch("http://127.0.0.1:5000/signup", {
+    const res = await fetch("/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
@@ -59,7 +59,7 @@ export default function TaskApp() {
   };
 
   const login = async () => {
-    const res = await fetch("http://127.0.0.1:5000/login", {
+    const res = await fetch("/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -74,7 +74,7 @@ export default function TaskApp() {
 
 const addTask = async () => {
   if (!newTask) return;
-  const res = await fetchWithAuth("http://127.0.0.1:5000/tasks", {
+  const res = await fetchWithAuth("/tasks", {
     method: "POST",
     body: JSON.stringify({
       title: newTask,
@@ -92,7 +92,7 @@ const addTask = async () => {
 };
 
   const toggleTask = async (id, completed) => {
-    const res = await fetchWithAuth(`http://127.0.0.1:5000/tasks/${id}`, {
+    const res = await fetchWithAuth(`/tasks/${id}`, {
       method: "PUT",
       body: JSON.stringify({ completed: !completed }),
     });
@@ -103,7 +103,7 @@ const addTask = async () => {
   };
 
   const saveEdit = async (id) => {
-    const res = await fetchWithAuth(`http://127.0.0.1:5000/tasks/${id}`, {
+    const res = await fetchWithAuth(`/tasks/${id}`, {
       method: "PUT",
       body: JSON.stringify({ title: editTitle }),
     });
@@ -116,7 +116,7 @@ const addTask = async () => {
   };
 
   const deleteTask = async (id) => {
-    const res = await fetchWithAuth(`http://127.0.0.1:5000/tasks/${id}`, {
+    const res = await fetchWithAuth(`/tasks/${id}`, {
       method: "DELETE",
     });
     if (res.ok) setTasks(tasks.filter((t) => t.id !== id));
@@ -156,7 +156,7 @@ const addTask = async () => {
 
   return (
     <div className="task-container">
-      <h2>Task Manager</h2>
+      <h2>Task M</h2>
       {/* 🔹 Logout button */}
       <button onClick={handleLogout} style={{ marginBottom: "20px" }}>
         Logout

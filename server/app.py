@@ -47,6 +47,7 @@ def login():
     user = User.query.filter_by(email=data["email"]).first()
 
     if user and user.check_password(data["password"]):
+        # ✅ Convert user.id to string before passing to JWT
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
         return jsonify({
