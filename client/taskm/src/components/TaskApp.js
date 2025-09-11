@@ -32,7 +32,7 @@ export default function TaskApp() {
 
   const loadTasks = async () => {
     try {
-      const res = await fetchWithAuth("/tasks");
+      const res = await fetchWithAuth("/api/tasks");
       if (res.ok) {
         const data = await res.json();
         setTasks(data);
@@ -49,7 +49,7 @@ export default function TaskApp() {
   };
 
   const signup = async () => {
-    const res = await fetch("/signup", {
+    const res = await fetch("http://localhost:5000/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
@@ -59,7 +59,7 @@ export default function TaskApp() {
   };
 
   const login = async () => {
-    const res = await fetch("/login", {
+    const res = await fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -72,27 +72,28 @@ export default function TaskApp() {
     } else alert("Login failed. Check credentials.");
   };
 
-const addTask = async () => {
-  if (!newTask) return;
-  const res = await fetchWithAuth("/tasks", {
-    method: "POST",
-    body: JSON.stringify({
-      title: newTask,
-      due_date: dueDate || null,
-      priority, completed: false
-    }),
-  });
-  if (res.ok) {
-    const task = await res.json();
-    setTasks([...tasks, task]);
-    setNewTask("");
-    setDueDate("");
-    setPriority("Medium");
-  }
-};
+  const addTask = async () => {
+    if (!newTask) return;
+    const res = await fetchWithAuth("/api/tasks", {
+      method: "POST",
+      body: JSON.stringify({
+        title: newTask,
+        due_date: dueDate || null,
+        priority,
+        completed: false,
+      }),
+    });
+    if (res.ok) {
+      const task = await res.json();
+      setTasks([...tasks, task]);
+      setNewTask("");
+      setDueDate("");
+      setPriority("Medium");
+    }
+  };
 
   const toggleTask = async (id, completed) => {
-    const res = await fetchWithAuth(`/tasks/${id}`, {
+    const res = await fetchWithAuth(`/api/tasks/${id}`, {
       method: "PUT",
       body: JSON.stringify({ completed: !completed }),
     });
@@ -103,7 +104,7 @@ const addTask = async () => {
   };
 
   const saveEdit = async (id) => {
-    const res = await fetchWithAuth(`/tasks/${id}`, {
+    const res = await fetchWithAuth(`/api/tasks/${id}`, {
       method: "PUT",
       body: JSON.stringify({ title: editTitle }),
     });
@@ -116,7 +117,7 @@ const addTask = async () => {
   };
 
   const deleteTask = async (id) => {
-    const res = await fetchWithAuth(`/tasks/${id}`, {
+    const res = await fetchWithAuth(`/api/tasks/${id}`, {
       method: "DELETE",
     });
     if (res.ok) setTasks(tasks.filter((t) => t.id !== id));
@@ -132,7 +133,7 @@ const addTask = async () => {
   if (!isLoggedIn)
     return (
       <div className="auth-container">
-        <h2>Task Manager Login / Signup</h2>
+        <h2>Task Manager SignIn </h2>
         <input
           placeholder="Username (signup)"
           value={username}

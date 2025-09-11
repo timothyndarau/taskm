@@ -278,3 +278,64 @@ body {
   margin-top: 0.5rem;
   text-align: center;
 }
+/* page container used by Home/Profile pages */
+.page-container {
+  max-width: 900px;
+  margin: 28px auto;
+  padding: 20px;
+}
+
+/* Home actions */
+.home-actions {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0 20px 0;
+}
+
+/* Buttons (reusable) */
+.btn {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #fff;
+  background: var(--primary);
+  border: 1px solid transparent;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.btn:hover { transform: translateY(-2px); opacity: 0.95; }
+
+.btn.secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Profile styles */
+.profile-container { max-width: 640px; }
+.profile-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.profile-field { margin-bottom: 8px; }
+
+.profile-error {
+  color: var(--error-text, #d32f2f);
+  background: var(--error-bg, #ffeaea);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+/* small logout button style */
+.btn.logout {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+}

@@ -1,9 +1,10 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/SignUp";
 import TaskApp from "./components/TaskApp";
-import Navbar from "./components/Navbar"; // ✅ import Navbar
+import Navbar from "./components/Navbar"; 
+import Home from "./components/Home";
+import Profile from "./components/Profile";
 
 // Simple private route
 function PrivateRoute({ children }) {
@@ -19,6 +20,9 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/tasks" element={<TaskApp />} />
+          <Route path="/profile" element={<Profile />} />
           <Route
             path="/tasks"
             element={

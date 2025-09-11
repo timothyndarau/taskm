@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import styles from "../App.css";
+import "../App.css"; 
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const themes = ["light", "dark", "colorful"];
@@ -17,15 +18,15 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.logo}>DidgiTasks</div>
-      <ul className={styles.links}>
-        <li>Home</li>
-        <li>Tasks</li>
-        <li>Profile</li>
-      </ul>
-      <div className={styles.actions}>
-        <button onClick={toggleTheme} className={styles.themeToggle}>
+    <nav className="navbar">
+      <div className="logo">DidgiTasks</div>
+      <ul className="links">
+  <li><Link to="/">Home</Link></li>
+  <li><Link to="/tasks">Tasks</Link></li>
+  <li><Link to="/profile">Profile</Link></li>
+</ul>
+      <div className="actions">
+        <button onClick={toggleTheme} className="themeToggle">
           {theme === "light" ? "🌞" : theme === "dark" ? "🌙" : "🎨"}
         </button>
       </div>
