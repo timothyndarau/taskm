@@ -1,35 +1,43 @@
-from flask import Flask, request, jsonify
+import os
+from datetime import datetime, timedelta
+from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_jwt_extended import (
-    JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+    JWTManager, create_access_token, create_refresh_token,
+    jwt_required, get_jwt_identity
 )
 from models import db, Task, User
-from datetime import datetime, timedelta
 
-app = Flask(__name__)
+# -------------------- App Config --------------------
+app = Flask(
+    __name__,
+    static_folder="../frontend/build",   # 👈 Serve React build
+    static_url_path="/"
+)
+
 CORS(app)
 
-# -------------------- Config --------------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Database (Render will inject DATABASE_URL env var for Postgres)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///task.db")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# JWT configuration
-app.config["JWT_SECRET_KEY"] = "super-secret-key"  # change this in production!
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)  # access token expires
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)  # refresh token expires
+# JWT config
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "super-secret-key")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
-# -------------------- Initialize --------------------
+# Init
 db.init_app(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 with app.app_context():
-    db.create_all()  # create tables if not exist
+    db.create_all()
 
 
-# ---- PROFILE ROUTES ----
+# -------------------- Profile Routes --------------------
 @app.route("/api/profile", methods=["GET"])
 @jwt_required()
 def get_profile():
@@ -57,6 +65,7 @@ def update_profile():
     db.session.commit()
     return jsonify(user.to_dict()), 200
 
+
 # -------------------- Auth Routes --------------------
 @app.route("/api/signup", methods=["POST"])
 def signup():
@@ -70,13 +79,13 @@ def signup():
     db.session.commit()
     return jsonify({"message": "User created successfully"}), 201
 
+
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
     user = User.query.filter_by(email=data["email"]).first()
 
     if user and user.check_password(data["password"]):
-        # ✅ Convert user.id to string before passing to JWT
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
         return jsonify({
@@ -87,6 +96,7 @@ def login():
         }), 200
 
     return jsonify({"message": "Invalid credentials"}), 401
+
 
 # -------------------- Task Routes --------------------
 @app.route("/api/tasks", methods=["GET", "POST"])
@@ -123,7 +133,7 @@ def tasks():
             title=title,
             due_date=due_date,
             priority=data.get("priority", "Medium"),
-            completed=data.get("completed", False),  # ✅ accept if provided
+            completed=data.get("completed", False),
             user_id=current_user
         )
 
@@ -164,6 +174,7 @@ def task_detail(task_id):
         db.session.commit()
         return jsonify({"message": "Task deleted"}), 200
 
+
 # -------------------- Refresh Token --------------------
 @app.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -172,6 +183,18 @@ def refresh():
     new_access_token = create_access_token(identity=current_user)
     return jsonify(access_token=new_access_token), 200
 
+
+# -------------------- Serve React Frontend --------------------
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path):
+    """Serve React build for any non-API route."""
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, "index.html")
+
+
 # -------------------- Run Server --------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
